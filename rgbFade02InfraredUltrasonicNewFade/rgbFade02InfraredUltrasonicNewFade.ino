@@ -34,6 +34,29 @@ int prevB = bluVal;
 /////////////////////////////////End of new fade initializations
 ///////////////////////////////
 
+int getPopularElementI(int* a, int length, int delta)
+{
+  int count = 1, tempCount;
+  int popular = a[0];
+  int temp = 0;
+  for (int i = 0; i < (length - 1); i++)
+  {
+    temp = a[i];
+    tempCount = 0;
+    for (int j = 1; j < length; j++)
+    {
+      if (abs(temp - a[j]) < delta)
+        tempCount++;
+    }
+    if (tempCount > count)
+    {
+      popular = temp;
+      count = tempCount;
+    }
+  }
+  return (int)popular;
+}
+
 int getPopularElement(float* a, int length, int delta)
 {
   int count = 1, tempCount;
@@ -95,8 +118,6 @@ float distanceFilter(float value)
 #define trigPin 7 // Trigger Pin
 #define LEDPin 13 // Onboard LED
 
-int maximumRange = 50; // Maximum range needed
-int minimumRange = 5; // Minimum range needed
 long duration, distance; // Duration used to calculate distance
 /////////
 
@@ -139,6 +160,19 @@ int sg = 0; //green
 //filter
 int filterArr[10] = {0,0,0,0,0,0,0,0,0,0};
 int incr = 0;
+
+int maximumRange = 350; // Maximum range needed
+int minimumRange = 50; // Minimum range needed
+
+float distanceFilter2(float value, int min, int max)
+{
+  if(value > max) {
+    value = max;
+  } else if (value < min) {
+    value = min;
+  }
+   return value;
+}
 
 void setup() {
 
@@ -236,12 +270,25 @@ void loop()
 int getDistance() {
   float volts = analogRead(IRpin)*0.0048828125;   // value from sensor * (5/1024) - if running 3.3.volts then change 5 to 3.3
   float dist_cm = get_distance_from_volts(volts); 
-  return distanceFilter(dist_cm);
+  return dist_cm;
+}
+
+int POP_DELAY = 10;
+int POP_DISPERSION = 10;
+int SELECTION_NUM = 10;
+int getPopDistance() {
+  int distances[SELECTION_NUM];
+  for(int i = 0; i<SELECTION_NUM; i++) {
+    delay(POP_DELAY);
+    distances[i] = getDistance();
+  }
+
+  return getPopularElementI(distances, SELECTION_NUM, POP_DISPERSION);
 }
 
 void normalMode()
 {
-  int distances[] = {5,20,30,40,50};
+  int distances[] = {50,150,230,290,350};
   int sb_local, sr_local, sg_local;
   //DISTANCE = getDistance();  
   DISTANCE = distanceFilter((int)getUltrasonicDistance());                                                                                                                                                                                                                                                                           
@@ -334,11 +381,11 @@ int getStrength(int cur, int mini, int maxi, bool shutOffWhenOutOfLimit, bool in
 ///////////////////Crossfade 
 void newfademode()
 {
-  int distances[] = {5,20,30,40,50};
+  int distances[] = {50,130,200,270,350};
   int sb_local, sr_local, sg_local;
-  //DISTANCE = getDistance();  
-  int setDist = getUltrasonicDistance(); 
-  DISTANCE =  setDist;                                                                                                                                                                                                                                                               
+  DISTANCE = distanceFilter2(getPopDistance(), distances[0], distances[4]);  
+  //int setDist = getUltrasonicDistance(); 
+  //DISTANCE =  setDist;                                                                                                                                                                                                                                                               
   Serial.print(DISTANCE); 
   Serial.println(" CM"); 
   if (DISTANCE <= distances[0]){
