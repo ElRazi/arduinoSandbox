@@ -10,7 +10,9 @@ int red[3]    = { 100, 0, 0 };
 int purpule[3]  = { 100, 0, 100 };
 int green[3]  = { 0, 100, 0 };
 int blue[3]   = { 0, 0, 100 };
-int yellow[3] = { 40, 95, 0 };
+//int yellow[3] = { 40, 95, 0 };
+int yellow[3] = { 100, 100, 0 };
+int orange[3] = { 100, 50, 0 };
 int dimWhite[3] = { 30, 30, 30 };
 // etc.
 
@@ -275,7 +277,7 @@ int getDistance() {
 
 int POP_DELAY = 10;
 int POP_DISPERSION = 10;
-int SELECTION_NUM = 10;
+int SELECTION_NUM = 20;
 int getPopDistance() {
   int distances[SELECTION_NUM];
   for(int i = 0; i<SELECTION_NUM; i++) {
@@ -380,6 +382,59 @@ int getStrength(int cur, int mini, int maxi, bool shutOffWhenOutOfLimit, bool in
 ///////////////////////////
 ///////////////////Crossfade 
 void newfademode()
+{
+  int distances[] = {30,150,250,300,350,390,450};
+  int sb_local, sr_local, sg_local;
+  DISTANCE = distanceFilter2(getPopDistance(), distances[0], distances[6]);  
+  //int setDist = getUltrasonicDistance(); 
+  //DISTANCE =  setDist;                                                                                                                                                                                                                                                               
+  Serial.print(DISTANCE); 
+  Serial.println(" CM"); 
+  if (DISTANCE <= distances[0]){
+        crossFade(red);
+       // Serial.println("red"); 
+      }
+      else if ( (DISTANCE > distances[0]) && (DISTANCE <= distances[1]) ) {
+        crossFade(yellow);
+        crossFade(blue);
+       // Serial.println("blue purpule"); 
+      }
+      else if ( (DISTANCE > distances[1]) && (DISTANCE <= distances[2]) ) {
+        crossFade(yellow);
+        crossFade(green);
+     //   Serial.println("green blue"); 
+      }
+      else if ( (DISTANCE > distances[2]) && (DISTANCE <= distances[3]) ) {
+        crossFade(dimWhite);
+        crossFade(yellow);
+       // Serial.println("yellow green"); 
+      }
+      else if ( (DISTANCE > distances[3]) && (DISTANCE <= distances[4]) ) {
+        crossFade(orange);
+        crossFade(yellow);
+      //  Serial.println("orange yellow"); 
+      }
+      else if ( (DISTANCE > distances[4]) && (DISTANCE <= distances[5]) ) {
+        crossFade(green);
+        crossFade(red);
+     //   Serial.println("red orange"); 
+      }
+      else if ( (DISTANCE > distances[5]) && (DISTANCE <= distances[6]) ) {
+        crossFade(orange);
+        crossFade(red);
+     //   Serial.println("red orange"); 
+      }
+      else
+      {
+        //crossFade(red);
+        crossFade(dimWhite);
+        Serial.println("white"); 
+      }
+
+  }
+
+
+void newfademode2()
 {
   int distances[] = {50,130,200,270,350};
   int sb_local, sr_local, sg_local;
