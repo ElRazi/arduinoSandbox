@@ -267,7 +267,8 @@ void loop()
   //  Serial.println("not normal");
   //  simpleMode();
 //  }
-  newfademode();
+//  newfademode();
+    killerLampFademode();
 }
 int getDistance() {
   float volts = analogRead(IRpin)*0.0048828125;   // value from sensor * (5/1024) - if running 3.3.volts then change 5 to 3.3
@@ -383,7 +384,7 @@ int getStrength(int cur, int mini, int maxi, bool shutOffWhenOutOfLimit, bool in
 ///////////////////Crossfade 
 void newfademode()
 {
-  int distances[] = {30,150,250,300,350,390,450};
+  int distances[] = {30,100,170,240,330,400,450};
   int sb_local, sr_local, sg_local;
   DISTANCE = distanceFilter2(getPopDistance(), distances[0], distances[6]);  
   //int setDist = getUltrasonicDistance(); 
@@ -391,48 +392,90 @@ void newfademode()
   Serial.print(DISTANCE); 
   Serial.println(" CM"); 
   if (DISTANCE <= distances[0]){
-        crossFade(red);
+        crossFade(dimWhite);
+        //crossFade(red);
        // Serial.println("red"); 
       }
       else if ( (DISTANCE > distances[0]) && (DISTANCE <= distances[1]) ) {
-        crossFade(yellow);
-        crossFade(blue);
+        crossFade(red);
+//        crossFade(blue);
        // Serial.println("blue purpule"); 
       }
       else if ( (DISTANCE > distances[1]) && (DISTANCE <= distances[2]) ) {
-        crossFade(yellow);
-        crossFade(green);
+        crossFade(orange);
+//        crossFade(green);
      //   Serial.println("green blue"); 
       }
       else if ( (DISTANCE > distances[2]) && (DISTANCE <= distances[3]) ) {
-        crossFade(dimWhite);
+//        crossFade(green);
         crossFade(yellow);
        // Serial.println("yellow green"); 
       }
       else if ( (DISTANCE > distances[3]) && (DISTANCE <= distances[4]) ) {
-        crossFade(orange);
-        crossFade(yellow);
+        crossFade(green);
+//        crossFade(yellow);
       //  Serial.println("orange yellow"); 
       }
       else if ( (DISTANCE > distances[4]) && (DISTANCE <= distances[5]) ) {
-        crossFade(green);
-        crossFade(red);
+        crossFade(blue);
+//        crossFade(red);
      //   Serial.println("red orange"); 
       }
       else if ( (DISTANCE > distances[5]) && (DISTANCE <= distances[6]) ) {
-        crossFade(orange);
-        crossFade(red);
+        crossFade(yellow);
+        crossFade(dimWhite);
      //   Serial.println("red orange"); 
       }
       else
       {
-        //crossFade(red);
+        crossFade(orange);
         crossFade(dimWhite);
-        Serial.println("white"); 
       }
 
   }
 
+
+void killerLampFademode()
+{
+  int distances[] = {30,40,50,70,90};
+  int sb_local, sr_local, sg_local;
+  DISTANCE = distanceFilter2(getPopDistance(), distances[0], distances[4]);  
+  //int setDist = getUltrasonicDistance(); 
+  //DISTANCE =  setDist;                                                                                                                                                                                                                                                               
+  Serial.print(DISTANCE); 
+  Serial.println(" CM"); 
+  if (DISTANCE <= distances[0]){
+        crossFade(dimWhite);
+        //crossFade(red);
+       // Serial.println("red"); 
+      }
+      else if ( (DISTANCE > distances[0]) && (DISTANCE <= distances[1]) ) {
+        crossFade(red);
+//        crossFade(blue);
+       // Serial.println("blue purpule"); 
+      }
+      else if ( (DISTANCE > distances[1]) && (DISTANCE <= distances[2]) ) {
+//        crossFade(orange);
+         crossFade(red);
+//        crossFade(green);
+     //   Serial.println("green blue"); 
+      }
+      else if ( (DISTANCE > distances[2]) && (DISTANCE <= distances[3]) ) {
+//        crossFade(yellow);
+//        crossFade(dimWhite);
+crossFade(orange);
+      }
+      else if ( (DISTANCE > distances[3]) && (DISTANCE <= distances[4]) ) {
+        crossFade(yellow);
+        crossFade(dimWhite); 
+      }
+      else
+      {
+        crossFade(orange);
+        crossFade(dimWhite);
+      }
+
+  }
 
 void newfademode2()
 {
@@ -444,7 +487,8 @@ void newfademode2()
   Serial.print(DISTANCE); 
   Serial.println(" CM"); 
   if (DISTANCE <= distances[0]){
-        crossFade(red);
+          crossFade(dimWhite);
+//        crossFade(red);
        // crossFade(yellow);
       }
       else if ( (DISTANCE > distances[0]) && (DISTANCE <= distances[1]) ) {
